@@ -7,13 +7,16 @@ import datetime
 shapefile_name = input('shp file name: ')
 host = input('host: ')
 user = input('user: ')
+dbname = input('database: ')
 password = input('password: ')
+tabela = input('tabela (esquema.tabela):')
 loop = input('loop ? 1 = True : ')
 
 try:
-    conexão = psycopg2.connect("dbname=financas_dejango user={} password={} host={}".format(user,password,host))
+    conexão = psycopg2.connect("dbname={} user={} password={} host={}".format(dbname,user,password,host))
 except:
     print('Fatal error \n tente novamente com uma senha diferente')
+
 
 def abrirShape():
     shp = shapefile.Reader(shapefile_name)
@@ -27,11 +30,12 @@ def execute_commit(squel, cursor):
 
 
 def verificar(ponto, cursor):
+    global tabela
     depois_antes = datetime.datetime.now()
     limite = 0
     agora = datetime.datetime.now()
     GEOgpsPonto = GEOSGeometry("POINT({} {})".format(str(ponto[0]), str(ponto[1])),srid=4326)
-    execute_commit("UPDATE malha_viaria.onibus set geom = ST_GeomFromEWKT('{}') where id = 1".format(GEOgpsPonto),cursor)
+    execute_commit("UPDATE {} set geom = ST_GeomFromEWKT('{}') where id = 1".format(tabela,GEOgpsPonto),cursor)
     time.sleep(10)
     print('')
 def serie_pontos():
