@@ -1,1 +1,3 @@
-pyshp
+pyshp 
+django 
+psycopg2
